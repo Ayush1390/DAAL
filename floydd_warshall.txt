@@ -1,0 +1,30 @@
+import numpy as np
+
+def solve(cost_matrix):
+    num_of_offices = len(cost_matrix)
+    dist = np.array(cost_matrix, copy=True)
+    for k in range(num_of_offices):
+        for i in range(num_of_offices):
+            for j in range(num_of_offices):
+                if dist[i][j] > dist[i][k] + dist[k][j]:
+                    dist[i][j] = dist[i][k] + dist[k][j]
+    return dist
+
+def main():
+    num_of_vertices = int(input("enetr number of offices: "))
+    cost_matrix = []
+    for i in range(num_of_vertices):
+        row = input().split()
+        cost_row = []
+        for cost in row:
+            if cost.lower() == "inf":
+                cost_row.append(float("inf"))
+            else:
+                cost_row.append(int(cost))
+        
+        cost_matrix.append(cost_row)
+    distances = solve(cost_matrix)
+    print(np.array(distances))
+    
+if __name__ == "__main__":
+    main()

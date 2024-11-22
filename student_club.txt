@@ -1,0 +1,72 @@
+import numpy as np
+from queue import PriorityQueue
+
+class Node:
+    def __init__(self, level, cost, assignment, visited):
+        self.level = level
+        self.cost = cost
+        self.assignment = assignment
+        self.visited = visited
+
+    def __lt__(self, other):
+        return self.cost < other.cost
+
+def branch_and_bound(cost_matrix):
+    N = len(cost_matrix)
+    min_cost = float('inf')
+    best_assignment = None
+
+    root = Node(level=0, cost=0, assignment=[-1] * N, visited=[False] * N)
+
+    pq = PriorityQueue()
+    pq.put(root)
+
+    while not pq.empty():
+        current_node = pq.get()
+
+        if current_node.level == N:
+            if current_node.cost < min_cost:
+                min_cost = current_node.cost
+                best_assignment = current_node.assignment.copy()
+            continue
+
+        for club in range(N):
+            if not current_node.visited[club]:
+                new_assignment = current_node.assignment.copy()
+                new_assignment[current_node.level] = club
+
+                new_cost = current_node.cost + cost_matrix[current_node.level][club]
+
+                new_node = Node(
+                    level=current_node.level + 1,
+                    cost=new_cost,
+                    assignment=new_assignment,
+                    visited=current_node.visited.copy()
+                )
+                new_node.visited[club] = True
+
+                if new_cost < min_cost:
+                    pq.put(new_node)
+
+    return best_assignment, min_cost
+
+def main():
+    N = int(input("Enter the number of students/clubs: "))
+
+    cost_matrix = []
+    print("Enter the cost matrix (row by row):")
+    for i in range(N):
+        row = list(map(int, input().split()))
+        cost_matrix.append(row)
+
+    cost_matrix = np.array(cost_matrix)
+
+    assignment, total_cost = branch_and_bound(cost_matrix)
+
+    assignment = [job + 1 for job in assignment]
+
+    print("Optimal assignment:", assignment)
+    print("Minimum cost:", total_cost)
+
+if __name__ == "__main__":
+    main()

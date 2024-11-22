@@ -1,0 +1,43 @@
+import heapq
+from collections import defaultdict
+
+def network_delay_time_dijkstra(times, N, K):
+    graph = defaultdict(list)
+
+    for u, v, w in times:
+        graph[u].append((v, w))
+
+    min_heap = [(0, K)]
+    shortest_time = {}
+
+    while min_heap:
+        current_time, node = heapq.heappop(min_heap)
+        if node in shortest_time:
+            continue
+
+        shortest_time[node] = current_time
+
+        for neighbor, travel_time in graph[node]:
+            if neighbor not in shortest_time:
+                heapq.heappush(min_heap, (current_time + travel_time, neighbor))
+
+    if len(shortest_time) == N:
+        return max(shortest_time.values())
+    else:
+        return -1
+
+def take_user_input():
+    N = int(input("Enter the number of nodes (N): "))
+    M = int(input("Enter the number of edges (M): "))
+    K = int(input("Enter the starting node (K): "))
+
+    print(f"Enter the {M} edges in the format (u, v, w):")
+    times = []
+    for _ in range(M):
+        u, v, w = map(int, input().split())
+        times.append([u, v, w])
+
+    result = network_delay_time_dijkstra(times, N, K)
+    print(f"Network Delay Time: {result}")
+
+take_user_input()

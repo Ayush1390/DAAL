@@ -1,0 +1,24 @@
+from math import ceil,floor
+
+def karatsuba(x,y):
+    
+    if x<10 and y<10:
+        return x*y
+    
+    n = max(len(str(x)),len(str(y)))
+    m = ceil(n/2)
+    
+    x_high = floor(x/(10**m))
+    x_low = x%(10**m)
+    y_high = floor(y/(10**m))
+    y_low = y%(10**m)
+    
+    a = karatsuba(x_high,y_high)
+    b = karatsuba(x_low,y_low)
+    c = karatsuba(x_high+x_low,y_high+y_low)-a-b
+    
+    return int(a*(10**(m*2)) + c*(10**m) + b)
+
+
+a = int(input("enter number: "))
+print(karatsuba(a,a))

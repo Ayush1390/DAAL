@@ -1,0 +1,35 @@
+class Task:
+    def __init__(self,profit,deadline):
+        self.profit = profit
+        self.deadline = deadline
+    
+def solve(tasks):
+    tasks.sort(key=lambda x:x.profit,reverse=True)
+    max_deadline = max([task.deadline for task in tasks])
+    
+    timeline = [None]*max_deadline
+    total_profit = 0
+    
+    for task in tasks:
+        for j in range(min(max_deadline,task.deadline)-1,-1,-1):
+            if timeline[j] is None:
+                timeline[j] = task
+                total_profit += task.profit
+                break
+    
+    return timeline,total_profit
+
+def main():
+    n = int(input("enetr number of tasks:"))
+    tasks = []
+    for i in range(n):
+        profit = int(input("netr profit"))
+        deadline = int(input("enetr deadline"))
+        tasks.append(Task(profit,deadline))
+    
+    
+    schedule,profit = solve(tasks)
+    print(profit)
+    
+if __name__ == "__main__":
+    main()
